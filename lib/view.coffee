@@ -185,7 +185,15 @@ class PlatformIOTerminalView extends View
     @subscriptions.remove @maximizeBtn.tooltip
     @maximizeBtn.tooltip.dispose()
 
-    @maxHeight = @prevHeight + atom.workspace.getCenter().paneContainer.element.offsetHeight
+    centerPaneHeight =
+      if typeof atom.workspace.getCenter is 'function'
+        # Atom >= 1.17
+        atom.workspace.getCenter().paneContainer.element.offsetHeight
+      else
+        # Atom < 1.17
+        $('.item-views').height()
+
+    @maxHeight = @prevHeight + centerPaneHeight
     btn = @maximizeBtn.children('span')
     @onTransitionEnd => @focus()
 
